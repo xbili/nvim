@@ -327,6 +327,10 @@ vim.o.relativenumber = true
 vim.o.colorcolumn = "120"
 vim.cmd("highlight ColorColumn ctermbg=235 guibg=#073642")
 
+-- I want to see which line I am on
+vim.o.cursorline = true
+vim.cmd("highlight CursorLine ctermbg=235 guibg=#073642")
+
 -- [[ Basic Keymaps ]]
 
 -- Keymaps for better default experience
