@@ -1,6 +1,8 @@
-# kickstart.nvim
+# Personal Neovim Configurations
 
-https://github.com/kdheepak/kickstart.nvim/assets/1813121/f3ff9a2b-c31f-44df-a4fa-8a0d7b17cf7b
+Fork of [`kickstart.nvim`](https://github.com/nvim-lua/kickstart.nvim) for a more modern take of my Neovim configurations.
+
+---
 
 ### Introduction
 
