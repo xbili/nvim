@@ -320,6 +320,13 @@ vim.o.completeopt = 'menuone,noselect'
 -- NOTE: You should make sure your terminal supports this
 vim.o.termguicolors = true
 
+-- I like to see relative line numbers for easier movement
+vim.o.relativenumber = true
+
+-- Hard limit when I write code
+vim.o.colorcolumn = "120"
+vim.cmd("highlight ColorColumn ctermbg=235 guibg=#073642")
+
 -- [[ Basic Keymaps ]]
 
 -- Keymaps for better default experience
