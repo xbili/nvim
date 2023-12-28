@@ -2,6 +2,11 @@
 
 Fork of [`kickstart.nvim`](https://github.com/nvim-lua/kickstart.nvim) for a more modern take of my Neovim configurations.
 
+### What's different?
+
+Just to keep track of the main changes I made so far:
+1. Roblox specific Lua LSP setup, so that I can have a different LSP loaded in my Rojo projects
+
 ---
 
 ### Introduction
