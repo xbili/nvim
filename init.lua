@@ -607,11 +607,7 @@ local function is_roblox_project()
   local fname = vim.fn.expand '%:p'
 
   local root_pattern_fn = require('lspconfig.util').root_pattern '*.project.json'
-  local root_dir = root_pattern_fn(fname)
-
-  if not root_dir then
-    return false
-  end
+  local root_dir = root_pattern_fn(fname) or vim.loop.cwd()
 
   local has_matching_files = false
   local p = io.popen('find "' .. root_dir .. '" -type f')
