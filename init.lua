@@ -328,12 +328,12 @@ vim.o.termguicolors = true
 vim.o.relativenumber = true
 
 -- Hard limit when I write code
-vim.o.colorcolumn = "120"
-vim.cmd("highlight ColorColumn ctermbg=235 guibg=#073642")
+vim.o.colorcolumn = '120'
+vim.cmd 'highlight ColorColumn ctermbg=235 guibg=#073642'
 
 -- I want to see which line I am on
 vim.o.cursorline = true
-vim.cmd("highlight CursorLine ctermbg=235 guibg=#073642")
+vim.cmd 'highlight CursorLine ctermbg=235 guibg=#073642'
 
 -- [[ Basic Keymaps ]]
 
@@ -599,14 +599,14 @@ capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
 local mason_lspconfig = require 'mason-lspconfig'
 
 mason_lspconfig.setup {
-  ensure_installed = { "lua_ls", "luau_lsp" },
+  ensure_installed = { 'lua_ls', 'luau_lsp' },
 }
 
 -- Make sure that we do not load up lua_ls if we are in a Roblox project
 local function is_roblox_project()
-  local fname = vim.fn.expand("%:p")
+  local fname = vim.fn.expand '%:p'
 
-  local root_pattern_fn = require("lspconfig.util").root_pattern("*.project.json")
+  local root_pattern_fn = require('lspconfig.util').root_pattern '*.project.json'
   local root_dir = root_pattern_fn(fname)
 
   if not root_dir then
@@ -616,28 +616,28 @@ local function is_roblox_project()
   local has_matching_files = false
   local p = io.popen('find "' .. root_dir .. '" -type f')
   if not p then
-    warn("Unable to locate Rojo project file in root_dir")
+    warn 'Unable to locate Rojo project file in root_dir'
     return false
   end
 
   for file in p:lines() do
-      if file:match("%.project%.json$") then
-          has_matching_files = true
-          break
-      end
+    if file:match '%.project%.json$' then
+      has_matching_files = true
+      break
+    end
   end
 
   return has_matching_files
 end
 
 if is_roblox_project() then
-  require("luau-lsp").setup({
+  require('luau-lsp').setup {
     server = {
-      filetypes = { "lua", "luau" }, -- default is { "luau" }
+      filetypes = { 'lua', 'luau' }, -- default is { "luau" }
       capabilities = capabilities,
       on_attach = on_attach,
       settings = {
-        ["luau-lsp"] = {
+        ['luau-lsp'] = {
           sourcemap = {
             enable = true,
           },
@@ -647,16 +647,16 @@ if is_roblox_project() then
         },
       },
     },
-  })
+  }
 else
   -- Setup neovim lua configuration
   require('neodev').setup()
-  require("lspconfig")["lua_ls"].setup({
+  require('lspconfig')['lua_ls'].setup {
     Lua = {
       workspace = { checkThirdParty = false },
       telemetry = { enable = false },
     },
-  })
+  }
 end
 
 -- [[ Configure nvim-cmp ]]
