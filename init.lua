@@ -602,6 +602,21 @@ local servers = {
       -- diagnostics = { disable = { 'missing-fields' } },
     },
   },
+
+  luau_lsp = {
+    filetypes = { "lua" },
+    settings = {
+      ["luau-lsp"] = {
+        sourcemap = {
+          enable = true, -- enable sourcemap generation
+        },
+        types = {
+          roblox = true, -- enable roblox api
+        },
+      }
+    },
+    rootdir = require("lspconfig.util").root_pattern("default.project.json")
+  }
 }
 
 -- Setup neovim lua configuration
@@ -625,6 +640,7 @@ mason_lspconfig.setup_handlers {
       on_attach = on_attach,
       settings = servers[server_name],
       filetypes = (servers[server_name] or {}).filetypes,
+      rootdir = (servers[server_name] or {}).rootdir,
     }
   end,
 }
