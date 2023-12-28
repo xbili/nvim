@@ -616,7 +616,7 @@ local function is_roblox_project()
   local has_matching_files = false
   local p = io.popen('find "' .. root_dir .. '" -type f')
   if not p then
-    warn 'Unable to locate Rojo project file in root_dir'
+    print('Unable to locate Rojo project file in root_dir')
     return false
   end
 
