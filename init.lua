@@ -264,6 +264,10 @@ require('lazy').setup({
     },
   },
 
+  {
+    'lopi-py/luau-lsp.nvim',
+  },
+
   -- NOTE: Next Step on Your Neovim Journey: Add/Configure additional "plugins" for kickstart
   --       These are some example plugins that I've included in the kickstart repository.
   --       Uncomment any of the lines below to enable them.
@@ -447,7 +451,7 @@ vim.keymap.set('n', '<leader>sr', require('telescope.builtin').resume, { desc = 
 vim.defer_fn(function()
   require('nvim-treesitter.configs').setup {
     -- Add languages to be installed here that you want installed for treesitter
-    ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'tsx', 'javascript', 'typescript', 'vimdoc', 'vim', 'bash' },
+    ensure_installed = { 'c', 'cpp', 'go', 'lua', 'luau', 'python', 'rust', 'tsx', 'javascript', 'typescript', 'vimdoc', 'vim', 'bash' },
 
     -- Autoinstall languages that are not installed. Defaults to false (but you can change for yourself!)
     auto_install = false,
@@ -586,41 +590,6 @@ require('mason-lspconfig').setup()
 --
 --  If you want to override the default filetypes that your language server will attach to you can
 --  define the property 'filetypes' to the map in question.
-local servers = {
-  -- clangd = {},
-  -- gopls = {},
-  -- pyright = {},
-  -- rust_analyzer = {},
-  -- tsserver = {},
-  -- html = { filetypes = { 'html', 'twig', 'hbs'} },
-
-  lua_ls = {
-    Lua = {
-      workspace = { checkThirdParty = false },
-      telemetry = { enable = false },
-      -- NOTE: toggle below to ignore Lua_LS's noisy `missing-fields` warnings
-      -- diagnostics = { disable = { 'missing-fields' } },
-    },
-  },
-
-  luau_lsp = {
-    filetypes = { "lua" },
-    settings = {
-      ["luau-lsp"] = {
-        sourcemap = {
-          enable = true, -- enable sourcemap generation
-        },
-        types = {
-          roblox = true, -- enable roblox api
-        },
-      }
-    },
-    rootdir = require("lspconfig.util").root_pattern("default.project.json")
-  }
-}
-
--- Setup neovim lua configuration
-require('neodev').setup()
 
 -- nvim-cmp supports additional completion capabilities, so broadcast that to servers
 local capabilities = vim.lsp.protocol.make_client_capabilities()
@@ -630,20 +599,65 @@ capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
 local mason_lspconfig = require 'mason-lspconfig'
 
 mason_lspconfig.setup {
-  ensure_installed = vim.tbl_keys(servers),
+  ensure_installed = { "lua_ls", "luau_lsp" },
 }
 
-mason_lspconfig.setup_handlers {
-  function(server_name)
-    require('lspconfig')[server_name].setup {
+-- Make sure that we do not load up lua_ls if we are in a Roblox project
+local function is_roblox_project()
+  local fname = vim.fn.expand("%:p")
+
+  local root_pattern_fn = require("lspconfig.util").root_pattern("*.project.json")
+  local root_dir = root_pattern_fn(fname)
+
+  if not root_dir then
+    return false
+  end
+
+  local has_matching_files = false
+  local p = io.popen('find "' .. root_dir .. '" -type f')
+  if not p then
+    warn("Unable to locate Rojo project file in root_dir")
+    return false
+  end
+
+  for file in p:lines() do
+      if file:match("%.project%.json$") then
+          has_matching_files = true
+          break
+      end
+  end
+
+  return has_matching_files
+end
+
+if is_roblox_project() then
+  require("luau-lsp").setup({
+    server = {
+      filetypes = { "lua", "luau" }, -- default is { "luau" }
       capabilities = capabilities,
       on_attach = on_attach,
-      settings = servers[server_name],
-      filetypes = (servers[server_name] or {}).filetypes,
-      rootdir = (servers[server_name] or {}).rootdir,
-    }
-  end,
-}
+      settings = {
+        ["luau-lsp"] = {
+          sourcemap = {
+            enable = true,
+          },
+          types = {
+            roblox = true,
+          },
+        },
+      },
+    },
+  })
+else
+  -- Setup neovim lua configuration
+  require('neodev').setup()
+  require("lspconfig")["lua_ls"].setup({
+    Lua = {
+      workspace = { checkThirdParty = false },
+      telemetry = { enable = false },
+    },
+  })
+end
 
 -- [[ Configure nvim-cmp ]]
 -- See `:help cmp`
