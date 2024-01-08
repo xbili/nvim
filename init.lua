@@ -613,7 +613,7 @@ capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
 local mason_lspconfig = require("mason-lspconfig")
 
 mason_lspconfig.setup({
-	ensure_installed = { "lua_ls", "luau_lsp" },
+	ensure_installed = { "lua_ls", "luau_lsp", "tsserver" },
 })
 
 -- Make sure that we do not load up lua_ls if we are in a Roblox project
@@ -668,6 +668,8 @@ else
 		},
 	})
 end
+
+require("lspconfig")["tsserver"].setup({})
 
 -- [[ Configure nvim-cmp ]]
 -- See `:help cmp`
