@@ -267,6 +267,9 @@ require("lazy").setup({
 	{
 		"lopi-py/luau-lsp.nvim",
 	},
+  {
+    "ckipp01/stylua-nvim",
+  },
 
 	-- NOTE: Next Step on Your Neovim Journey: Add/Configure additional "plugins" for kickstart
 	--       These are some example plugins that I've included in the kickstart repository.
@@ -465,12 +468,13 @@ vim.defer_fn(function()
 			"vimdoc",
 			"vim",
 			"bash",
+      "just",
 		},
 
 		-- Autoinstall languages that are not installed. Defaults to false (but you can change for yourself!)
 		auto_install = false,
 
-		highlight = { enable = true },
+		highlight = { enable = false },
 		indent = { enable = true },
 		incremental_selection = {
 			enable = true,
@@ -613,7 +617,7 @@ capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
 local mason_lspconfig = require("mason-lspconfig")
 
 mason_lspconfig.setup({
-	ensure_installed = { "lua_ls", "luau_lsp", "tsserver" },
+	ensure_installed = { "lua_ls", "luau_lsp", "tsserver", "pyright" },
 })
 
 -- Make sure that we do not load up lua_ls if we are in a Roblox project
@@ -658,6 +662,17 @@ if is_roblox_project() then
 			},
 		},
 	})
+
+  -- Run format on save
+  vim.api.nvim_create_autocmd("BufWritePre", {
+    callback = function()
+      local mode = vim.api.nvim_get_mode().mode
+      if vim.bo.modified == true and mode == 'n' then
+        require("stylua-nvim").format_file()
+      end
+    end
+  })
+
 else
 	-- Setup neovim lua configuration
 	require("neodev").setup()
@@ -670,6 +685,7 @@ else
 end
 
 require("lspconfig")["tsserver"].setup({})
+require("lspconfig")["pyright"].setup({})
 
 -- [[ Configure nvim-cmp ]]
 -- See `:help cmp`
