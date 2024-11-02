@@ -667,8 +667,13 @@ if is_roblox_project() then
   vim.api.nvim_create_autocmd("BufWritePre", {
     callback = function()
       local mode = vim.api.nvim_get_mode().mode
+
       if vim.bo.modified == true and mode == 'n' then
-        require("stylua-nvim").format_file()
+        local currentBufferName = vim.api.nvim_buf_get_name(0)
+
+        if currentBufferName:match("%.lua$") or currentBufferName:match("%.luau$") then
+          require("stylua-nvim").format_file()
+        end
       end
     end
   })
