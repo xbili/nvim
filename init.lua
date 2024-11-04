@@ -617,7 +617,7 @@ capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
 local mason_lspconfig = require("mason-lspconfig")
 
 mason_lspconfig.setup({
-	ensure_installed = { "lua_ls", "luau_lsp", "tsserver", "pyright" },
+	ensure_installed = { "lua_ls", "luau_lsp", "pyright" },
 })
 
 -- Make sure that we do not load up lua_ls if we are in a Roblox project
@@ -647,7 +647,7 @@ end
 if is_roblox_project() then
 	require("luau-lsp").setup({
 		server = {
-			filetypes = { "lua", "luau" }, -- default is { "luau" }
+			filetypes = { "lua", "luau" },
 			capabilities = capabilities,
 			on_attach = on_attach,
 			settings = {
@@ -689,7 +689,6 @@ else
 	})
 end
 
-require("lspconfig")["tsserver"].setup({})
 require("lspconfig")["pyright"].setup({})
 
 -- [[ Configure nvim-cmp ]]
